@@ -17,4 +17,7 @@ $errorMiddleware = $app->addErrorMiddleware(
 $errorHandler = $errorMiddleware->getDefaultErrorHandler();
 $errorHandler->forceContentType('application/json');
 
+$routes = require_once __DIR__ . '/routes.php';
+$routes($app);
+
 return $app;
