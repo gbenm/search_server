@@ -1,11 +1,47 @@
 <?php
 namespace App\Search\Infrastructure;
 
+use App\Search\Domain\Models\Result;
 use App\Search\Domain\SearchEngine;
+use App\Shared\Domain\HTTPClient;
 
 class StackExchangeSearchEngine implements SearchEngine {
+  public function __construct(
+    private readonly HTTPClient $client,
+  ) {}
+
   public function search(string $query, int $page, int $per_page): array
   {
-    return [];
+    if (empty($query)) {
+      return [];
+    }
+
+    $results = $this->client->request(
+      method: 'GET',
+      url: 'https://api.stackexchange.com/2.3/search',
+      options: [
+        'query' => [
+          'intitle' => $query,
+          'site' => 'stackoverflow',
+          'page' => $page,
+          'pagesize' => $per_page,
+        ],
+      ],
+    );
+
+    return array_map(
+      fn(array $response) => $this->resultFromResponse($response),
+      $results['items'],
+    );
+  }
+
+  private function resultFromResponse(array $response): Result
+  {
+    return new Result(
+      title: $response['title'],
+      answer_count: $response['answer_count'],
+      username: $response['owner']['display_name'],
+      profile_picture_url: $response['owner']['profile_image'],
+    );
   }
 }

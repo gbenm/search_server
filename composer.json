@@ -11,7 +11,8 @@
         "laminas/laminas-diactoros": "^2.24",
         "php-di/php-di": "^6.4",
         "vlucas/phpdotenv": "^5.5",
-        "predis/predis": "^2.0"
+        "predis/predis": "^2.0",
+        "guzzlehttp/guzzle": "^7.0"
     },
     "license": "MIT",
     "autoload": {
