@@ -25,6 +25,11 @@ docker compose --profile all up -d
 > poder tener acceso a los datos de una forma más
 > sencilla.
 
+Para parar la ejecución
+```bash
+docker compose --profile all down
+```
+
 ## API
 Vea [api](./docs/api.md).
 
