@@ -4,6 +4,7 @@ namespace App\Search\Infrastructure;
 use App\Search\Application\SearchUseCase;
 use App\Search\Domain\Models\Result;
 use App\Shared\Domain\CacheInterface;
+use App\Shared\Domain\ServerError;
 use App\Shared\Infrastructure\Env;
 use App\Shared\Infrastructure\Router;
 use App\Stats\Application\StatsUseCase;
@@ -46,7 +47,20 @@ class SearchRouter
       $search_engine = self::getFromContainer($this, 'search_engine');
       $search_use_case = new SearchUseCase($search_engine);
 
-      $results = $search_use_case->search($query, $page, $pagesize);
+      $results = [];
+
+      try {
+        $results = $search_use_case->search($query, $page, $pagesize);
+      } catch (ServerError $e) {
+        $response->getBody()->write(json_encode([
+          'status' => 'error',
+          'message' => $e->getMessage(),
+          'data' => $e->errorData
+        ]));
+
+        return self::asJson($response->withStatus($e->statusCode));
+      }
+
       $results = array_map(fn(Result $result) => $result->toArray(), $results);
 
       $json_response = [

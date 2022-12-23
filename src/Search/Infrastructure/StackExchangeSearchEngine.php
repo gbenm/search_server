@@ -4,6 +4,7 @@ namespace App\Search\Infrastructure;
 use App\Search\Domain\Models\Result;
 use App\Search\Domain\SearchEngine;
 use App\Shared\Domain\HTTPClient;
+use App\Shared\Domain\ServerError;
 
 class StackExchangeSearchEngine implements SearchEngine
 {
@@ -17,18 +18,30 @@ class StackExchangeSearchEngine implements SearchEngine
       return [];
     }
 
-    $results = $this->client->request(
-      method: 'GET',
-      url: 'https://api.stackexchange.com/2.3/search',
-      options: [
-        'query' => [
-          'intitle' => $query,
-          'site' => 'stackoverflow',
-          'page' => $page,
-          'pagesize' => $per_page,
+    $results = [];
+
+    try {
+      $results = $this->client->request(
+        method: 'GET',
+        url: 'https://api.stackexchange.com/2.3/search',
+        options: [
+          'query' => [
+            'intitle' => $query,
+            'site' => 'stackoverflow',
+            'page' => $page,
+            'pagesize' => $per_page,
+          ],
         ],
-      ],
-    );
+      );
+    } catch (ServerError $e) {
+      throw new ServerError(
+        message: $e->getMessage(),
+        statusCode: 502,
+        errorData: [
+          'provider_error' => $e->errorData,
+        ],
+      );
+    }
 
     return array_map(
       fn(array $response) => $this->resultFromResponse($response),
