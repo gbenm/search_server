@@ -10,7 +10,11 @@ class RedisCache implements CacheInterface {
   private $cache;
 
   function __construct() {
-    $driver = CacheManager::getInstance('Predis', new RedisConfig());
+    $config = new RedisConfig();
+    $config->setHost(Env::getRedisHost());
+    $config->setPort(Env::getRedisPort());
+
+    $driver = CacheManager::getInstance('Predis', $config);
     $this->cache = new Psr16Adapter($driver);
   }
 
