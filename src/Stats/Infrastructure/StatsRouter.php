@@ -61,7 +61,8 @@ class StatsRouter {
 
       $from = self::getStartDateTime($params);
       $until = self::getEndDateTime($params);
-      $exact = $params['exact'] === 'true' ?: false;
+      $exact = $params['exact'] ?? 'false';
+      $exact = $exact === 'true';
       $count = $params['count'] ?? 10;
 
       $statsRepo = self::getFromContainer($this, 'stats_repository');
