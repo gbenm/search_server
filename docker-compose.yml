@@ -1,6 +1,23 @@
 version: "3.9"
 
 services:
+  server:
+    image: 'search_server'
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/usr/src/search_server
+    depends_on:
+      - db
+      - redis
+    profiles:
+      - devapp
+      - all
   redis:
     image: bitnami/redis:7.0
     ports:
@@ -10,6 +27,7 @@ services:
       - .env
     profiles:
       - dev
+      - all
   db:
     image: mysql:8
     env_file:
@@ -22,6 +40,7 @@ services:
       - "3306:3306"
     profiles:
       - dev
+      - all
   phpmyadmin:
     image: phpmyadmin
     ports:
@@ -31,5 +50,6 @@ services:
       PMA_HOST: db
     profiles:
       - debug
+      - all
 
 
