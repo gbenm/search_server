@@ -10,4 +10,26 @@ services:
       - .env
     profiles:
       - dev
+  db:
+    image: mysql:8
+    env_file:
+      - .env
+    restart: on-failure
+    volumes:
+      - ./initdb.d:/docker-entrypoint-initdb.d
+      - ./.volumes/mysql:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    profiles:
+      - dev
+  phpmyadmin:
+    image: phpmyadmin
+    ports:
+      - "8888:80"
+    restart: on-failure
+    environment:
+      PMA_HOST: db
+    profiles:
+      - debug
+
 

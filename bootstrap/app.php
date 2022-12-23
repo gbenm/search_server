@@ -2,6 +2,7 @@
 use Slim\Factory\AppFactory;
 
 require_once __DIR__ . '/env.php';
+require_once __DIR__ . '/config.php';
 
 $container = require __DIR__ . '/dependency_injection.php';
 

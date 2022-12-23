@@ -6,6 +6,7 @@ use App\Search\Domain\Models\Result;
 use App\Shared\Domain\CacheInterface;
 use App\Shared\Infrastructure\Env;
 use App\Shared\Infrastructure\Router;
+use App\Stats\Application\StatsUseCase;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
@@ -25,6 +26,10 @@ class SearchRouter {
       $query = $request->getQueryParams()['query'] ?? '';
       $page = $request->getQueryParams()['page'] ?? 1;
       $pagesize = $request->getQueryParams()['pagesize'] ?? 10;
+
+      $statsRepo = self::getFromContainer($this, 'stats_repository');
+      $stats_use_case = new StatsUseCase($statsRepo);
+      $stats_use_case->registerSearch($query);
 
       /** @var CacheInterface */
       $cache = self::getFromContainer($this, 'cache');
