@@ -46,6 +46,10 @@ class MySqlStatsRepository implements StatsRepository {
 
   public function registerSearch(string $query): void
   {
+    if (empty($query)) {
+      return;
+    }
+
     $this->client->insert(
       'INSERT INTO search_logs (query) VALUES (?);',
       ['s', $query]
