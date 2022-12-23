@@ -12,7 +12,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
 
 
-class SearchRouter {
+class SearchRouter
+{
   use Router;
 
   public static function setup(App $app)

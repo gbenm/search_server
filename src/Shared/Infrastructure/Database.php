@@ -4,14 +4,17 @@ namespace App\Shared\Infrastructure;
 use Exception;
 use mysqli;
 
-final class Database {
+final class Database
+{
   private $instance = null;
 
-  public function __construct() {
-    $this->instance = $this->get_connection();
+  public function __construct()
+  {
+    $this->instance = $this->getConnection();
   }
 
-  private function get_connection() {
+  private function getConnection()
+  {
     $host = Env::getDbHost();
     $port = Env::getDbPort();
 
@@ -34,20 +37,23 @@ final class Database {
     return $connection;
   }
 
-  public function select(string $statement, array $params = []): array {
-    $stmt = $this->execute_statement($statement, $params);
+  public function select(string $statement, array $params = []): array
+  {
+    $stmt = $this->executeStatement($statement, $params);
     $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     $stmt->close();
 
     return $result;
   }
 
-  public function insert(string $statement, array $params = []): void {
-    $stmt = $this->execute_statement($statement, $params);
+  public function insert(string $statement, array $params = []): void
+  {
+    $stmt = $this->executeStatement($statement, $params);
     $stmt->close();
   }
 
-  public function execute_statement(string $statement, array $params = []): \mysqli_stmt {
+  public function executeStatement(string $statement, array $params = []): \mysqli_stmt
+  {
     $stmt = $this->instance->prepare($statement);
     $stmt->bind_param(...$params);
     $stmt->execute();

@@ -3,7 +3,8 @@ namespace App\Search\Domain;
 
 use App\Search\Domain\Models\Result;
 
-interface SearchEngine {
+interface SearchEngine
+{
   /**
    * @return Result[]
    */

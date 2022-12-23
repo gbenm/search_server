@@ -1,7 +1,8 @@
 <?php
 namespace App\Search\Domain\Models;
 
-final class Result {
+final class Result
+{
   public function __construct(
     public readonly string $title,
     public readonly int $answer_count,
@@ -9,7 +10,8 @@ final class Result {
     public readonly string|null|array $profile_picture_url,
   ) {}
 
-  public function toArray() {
+  public function toArray()
+  {
     return [
       'title' => $this->title,
       'answer_count' => $this->answer_count,

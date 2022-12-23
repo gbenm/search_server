@@ -5,7 +5,8 @@ use App\Stats\Domain\Models\Stat;
 use App\Stats\Domain\StatsRepository;
 use DateTime;
 
-class StatsUseCase {
+class StatsUseCase
+{
   public function __construct(
     private readonly StatsRepository $repo,
   ) {}

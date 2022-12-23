@@ -4,7 +4,8 @@ namespace App\Stats\Domain;
 use App\Stats\Domain\Models\Stat;
 use DateTime;
 
-interface StatsRepository {
+interface StatsRepository
+{
   /**
    * @return Stat[]
    */

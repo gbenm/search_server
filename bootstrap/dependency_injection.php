@@ -11,9 +11,9 @@ $container = new Container();
 
 $container->set('cache', new RedisCache());
 
-$http_client = new GuzzleClient();
+$httpClient = new GuzzleClient();
 $container->set('search_engine', new StackExchangeSearchEngine(
-  client: $http_client,
+  client: $httpClient,
 ));
 
 

@@ -5,7 +5,8 @@ use App\Search\Domain\Models\Result;
 use App\Search\Domain\SearchEngine;
 use App\Shared\Domain\HTTPClient;
 
-class StackExchangeSearchEngine implements SearchEngine {
+class StackExchangeSearchEngine implements SearchEngine
+{
   public function __construct(
     private readonly HTTPClient $client,
   ) {}

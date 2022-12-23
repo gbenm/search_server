@@ -6,10 +6,12 @@ use App\Stats\Domain\Models\Stat;
 use App\Stats\Domain\StatsRepository;
 use DateTime;
 
-class MySqlStatsRepository implements StatsRepository {
+class MySqlStatsRepository implements StatsRepository
+{
   public function __construct(private readonly Database $client) {}
 
-  public function getMostSearched(int $top, \DateTime $from, \DateTime $until): array {
+  public function getMostSearched(int $top, \DateTime $from, \DateTime $until): array
+  {
     $statement = 'SELECT query, COUNT(*) AS searches FROM search_logs WHERE searched_at BETWEEN ? AND ? GROUP BY query ORDER BY searches DESC LIMIT ?;';
     $params = ['ssi', $this->dateFormat($from), $this->dateFormat($until), $top];
 

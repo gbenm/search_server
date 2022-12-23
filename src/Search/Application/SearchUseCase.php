@@ -4,7 +4,8 @@ namespace App\Search\Application;
 use App\Search\Domain\Models\Result;
 use App\Search\Domain\SearchEngine;
 
-class SearchUseCase {
+class SearchUseCase
+{
   public function __construct(
     private readonly SearchEngine $engine,
   ) {}

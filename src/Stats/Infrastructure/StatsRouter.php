@@ -11,7 +11,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
 
 
-class StatsRouter {
+class StatsRouter
+{
   use Router;
 
   public static function setup(App $app)
