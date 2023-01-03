@@ -3,11 +3,13 @@ namespace App\Search\Infrastructure;
 
 use App\Search\Application\SearchUseCase;
 use App\Search\Domain\Models\Result;
+use App\Search\Domain\SearchEngine;
 use App\Shared\Domain\CacheInterface;
 use App\Shared\Domain\ServerError;
 use App\Shared\Infrastructure\Env;
 use App\Shared\Infrastructure\Router;
 use App\Stats\Application\StatsUseCase;
+use App\Stats\Domain\StatsRepository;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
@@ -29,12 +31,12 @@ class SearchRouter
       $page = $request->getQueryParams()['page'] ?? 1;
       $pagesize = $request->getQueryParams()['pagesize'] ?? 10;
 
-      $statsRepo = self::getFromContainer($this, 'stats_repository');
+      $statsRepo = self::getFromContainer($this, StatsRepository::class);
       $stats_use_case = new StatsUseCase($statsRepo);
       $stats_use_case->registerSearch($query);
 
       /** @var CacheInterface */
-      $cache = self::getFromContainer($this, 'cache');
+      $cache = self::getFromContainer($this, CacheInterface::class);
       $cache_key = self::getCacheKeyFrom('/search', $query, $page, $pagesize);
       $in_cache = $cache->has($cache_key);
 
@@ -44,7 +46,7 @@ class SearchRouter
         return self::asJson($response);
       }
 
-      $search_engine = self::getFromContainer($this, 'search_engine');
+      $search_engine = self::getFromContainer($this, SearchEngine::class);
       $search_use_case = new SearchUseCase($search_engine);
 
       $results = [];

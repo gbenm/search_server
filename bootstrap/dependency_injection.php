@@ -1,24 +1,27 @@
 <?php
 
+use App\Search\Domain\SearchEngine;
 use App\Search\Infrastructure\StackExchangeSearchEngine;
+use App\Shared\Domain\CacheInterface;
 use App\Shared\Infrastructure\Database;
 use App\Shared\Infrastructure\GuzzleClient;
 use App\Shared\Infrastructure\RedisCache;
+use App\Stats\Domain\StatsRepository;
 use App\Stats\Infrastructure\MySqlStatsRepository;
 use DI\Container;
 
 $container = new Container();
 
-$container->set('cache', new RedisCache());
+$container->set(CacheInterface::class, new RedisCache());
 
 $httpClient = new GuzzleClient();
-$container->set('search_engine', new StackExchangeSearchEngine(
+$container->set(SearchEngine::class, new StackExchangeSearchEngine(
   client: $httpClient,
 ));
 
 
 $database = new Database();
-$container->set('stats_repository', new MySqlStatsRepository(
+$container->set(StatsRepository::class, new MySqlStatsRepository(
   client: $database,
 ));
 

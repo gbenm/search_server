@@ -5,6 +5,7 @@ use App\Shared\Infrastructure\Env;
 use App\Shared\Infrastructure\Router;
 use App\Stats\Application\StatsUseCase;
 use App\Stats\Domain\Models\Stat;
+use App\Stats\Domain\StatsRepository;
 use DateTime;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -32,7 +33,7 @@ class StatsRouter
       $from = self::getStartDateTime($params);
       $until = self::getEndDateTime($params);
 
-      $statsRepo = self::getFromContainer($this, 'stats_repository');
+      $statsRepo = self::getFromContainer($this, StatsRepository::class);
       $stats_use_case = new StatsUseCase($statsRepo);
       $most_searched = $stats_use_case->getMostSearched(
         top: $top,
@@ -66,7 +67,7 @@ class StatsRouter
       $exact = $exact === 'true';
       $count = $params['count'] ?? 10;
 
-      $statsRepo = self::getFromContainer($this, 'stats_repository');
+      $statsRepo = self::getFromContainer($this, StatsRepository::class);
       $stats_use_case = new StatsUseCase($statsRepo);
       $stats = $stats_use_case->getStatsOf(
         query: $query,
