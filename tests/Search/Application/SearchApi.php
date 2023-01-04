@@ -1,6 +1,7 @@
 <?php
 namespace Tests\Search\Infrastructure;
 
+use App\Shared\Domain\ServerError;
 use Prophecy\Argument;
 use Tests\ApiClient;
 use Tests\Search\Factories\ResultFactory;
@@ -118,5 +119,52 @@ final class SearchApi extends TestCase
     foreach ($responseData['data']['results'] as $resultFound) {
       $this->assertTrue(isset($resultsTitlesMap[$resultFound['title']]));
     }
+  }
+
+  public function testGetBadGatewayErrorIfProviderFails()
+  {
+    $client = $this->createApiClient();
+    $this->setUpCommonMockUpCalls($client);
+
+    $client->searchEngineProphecy->search(
+      query: 'php',
+      page: 26,
+      per_page: 10
+    )->willThrow(new ServerError(
+      message: 'Bad Gateway',
+      statusCode: 502,
+      errorData: [
+        'provider_error' => [
+          'error_id' => 403,
+          'error_message' => 'page above 25 requires access token or app key',
+          'error_name' => 'access_denied',
+        ]
+      ]
+    ));
+
+    $response = $client->executeRequest(
+      method: 'GET',
+      path: '/search',
+      query: [
+        'query' => 'php',
+        'page' => 26,
+      ]
+    );
+
+    $statusCode = $response->getStatusCode();
+
+    $this->assertEquals(502, $statusCode);
+
+    $data = json_decode($response->getBody(), true);
+    $this->assertEquals('error', $data['status']);
+    $this->assertEquals('Bad Gateway', $data['message']);
+
+    $provider_error = $data['data']['provider_error'];
+    $this->assertEquals(403, $provider_error['error_id']);
+    $this->assertEquals(
+      'page above 25 requires access token or app key',
+      $provider_error['error_message']
+    );
+    $this->assertEquals('access_denied', $provider_error['error_name']);
   }
 }
