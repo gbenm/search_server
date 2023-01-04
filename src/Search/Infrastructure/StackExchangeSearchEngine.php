@@ -55,9 +55,18 @@ class StackExchangeSearchEngine implements SearchEngine
     return new Result(
       title: $response['title'],
       answer_count: $response['answer_count'],
-      username: $response['owner']['display_name'],
+      username: $this->getProfileUsername($response),
       profile_picture_url: $this->getProfilePictureUrl($response),
     );
+  }
+
+  private function getProfileUsername(array $response): ?string
+  {
+    if (isset($response['owner']['display_name'])) {
+      return $response['owner']['display_name'];
+    }
+
+    return null;
   }
 
   private function getProfilePictureUrl(array $response): string|null|array

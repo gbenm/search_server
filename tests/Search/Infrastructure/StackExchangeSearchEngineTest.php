@@ -37,7 +37,10 @@ final class StackExchangeSearchEngineTest extends TestCase
     $this->assertIsArray($results);
     $this->assertNotEmpty($results);
     $this->assertCount(10, $results);
-    $this->assertInstanceOf(Result::class, $results[0]);
+
+    foreach ($results as $result) {
+      $this->assertInstanceOf(Result::class, $result);
+    }
 
     $titlesMap = array_reduce(
       $providerResponse['items'],
@@ -99,5 +102,108 @@ final class StackExchangeSearchEngineTest extends TestCase
       );
       $this->assertEquals(403, $providerError['error_id']);
     }
+  }
+
+  public function testShouldNotFailIfProfileImageIsNull()
+  {
+    $clientProphecy = $this->prophet->prophesize(HTTPClient::class);
+    $providerResponse = SearchProviderResponse::create(1);
+    $providerResponse['items'][0]['owner']['profile_image'] = null;
+
+    $clientProphecy->request(
+      method: 'GET',
+      url: 'https://api.fake.com/search',
+      options: [
+        'query' => [
+          'intitle' => 'php',
+          'site' => 'stackoverflow',
+          'page' => 1,
+          'pagesize' => 10,
+        ],
+      ],
+    )->willReturn($providerResponse);
+
+    $client = $clientProphecy->reveal();
+    $searchEngine = new StackExchangeSearchEngine($client);
+    $results = $searchEngine->search(
+      query: 'php',
+      page: 1,
+      per_page: 10
+    );
+
+    $this->assertIsArray($results);
+    $this->assertNotEmpty($results);
+    $this->assertCount(1, $results);
+    $this->assertInstanceOf(Result::class, $results[0]);
+    $this->assertNull($results[0]->profile_picture_url);
+  }
+
+  public function testShouldNotFailIfUsernameIsNull()
+  {
+    $clientProphecy = $this->prophet->prophesize(HTTPClient::class);
+    $providerResponse = SearchProviderResponse::create(1);
+    $providerResponse['items'][0]['owner']['display_name'] = null;
+
+    $clientProphecy->request(
+      method: 'GET',
+      url: 'https://api.fake.com/search',
+      options: [
+        'query' => [
+          'intitle' => 'php',
+          'site' => 'stackoverflow',
+          'page' => 1,
+          'pagesize' => 10,
+        ],
+      ],
+    )->willReturn($providerResponse);
+
+    $client = $clientProphecy->reveal();
+    $searchEngine = new StackExchangeSearchEngine($client);
+    $results = $searchEngine->search(
+      query: 'php',
+      page: 1,
+      per_page: 10
+    );
+
+    $this->assertIsArray($results);
+    $this->assertNotEmpty($results);
+    $this->assertCount(1, $results);
+    $this->assertInstanceOf(Result::class, $results[0]);
+    $this->assertNull($results[0]->username);
+  }
+
+  public function testShouldNotFailIfOwnerIsMissing()
+  {
+    $clientProphecy = $this->prophet->prophesize(HTTPClient::class);
+    $providerResponse = SearchProviderResponse::create(1);
+    unset($providerResponse['items'][0]['owner']);
+
+    $clientProphecy->request(
+      method: 'GET',
+      url: 'https://api.fake.com/search',
+      options: [
+        'query' => [
+          'intitle' => 'php',
+          'site' => 'stackoverflow',
+          'page' => 1,
+          'pagesize' => 10,
+        ],
+      ],
+    )->willReturn($providerResponse);
+
+    $client = $clientProphecy->reveal();
+    $searchEngine = new StackExchangeSearchEngine($client);
+    $results = $searchEngine->search(
+      query: 'php',
+      page: 1,
+      per_page: 10
+    );
+
+    $this->assertIsArray($results);
+    $this->assertNotEmpty($results);
+    $this->assertCount(1, $results);
+    $this->assertInstanceOf(Result::class, $results[0]);
+    $this->assertNull($results[0]->username);
+    $this->assertNull($results[0]->profile_picture_url);
   }
 }

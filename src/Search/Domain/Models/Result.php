@@ -6,7 +6,7 @@ final class Result
   public function __construct(
     public readonly string $title,
     public readonly int $answer_count,
-    public readonly string $username,
+    public readonly ?string $username,
     public readonly string|null|array $profile_picture_url,
   ) {}
 
