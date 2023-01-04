@@ -1,5 +1,5 @@
 <?php
-namespace Tests\Search\Infrastructure;
+namespace Tests\Search\Application;
 
 use App\Shared\Domain\ServerError;
 use Prophecy\Argument;
