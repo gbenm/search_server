@@ -67,6 +67,24 @@ Los módulos en `src/`:
   respuestas.
 - `Stats` se encarga de administrar las estadísticas.
 
+## Debugging en VS Code
+Dentro del directorio `.vscode` se encuentran las extensiones recomendadas, estas
+deben ser instaladas. El archivo `launch.json` contiene los perfiles por defecto para utilizar `xdebug` (debe ser instalado
+en el sistema operativo host).
+
+### Configuración básica para Xdebug
+En el archivo php.ini
+
+```ini
+[xdebug]
+xdebug.mode = debug
+xdebug.start_with_request = yes
+```
+
+### Uso
+Se inicia el debugger con el perfil `Listen for Xdebug` y luego en la
+sección `testing` de visual studio code se corre el respectivo test.
+
 ## PHP nativo?
 - Composer 2.4.4+
 - PHP 8.1+
