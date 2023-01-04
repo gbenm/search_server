@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<ruleset name="Coding standard">
+    <!-- display progress -->
+    <arg value="p"/>
+    <arg name="colors"/>
+
+    <!-- inherit rules from: -->
+    <rule ref="PSR12"/>
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+
+    <file>src</file>
+    <file>bootstrap</file>
+    <file>tests</file>
+</ruleset>

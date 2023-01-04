@@ -38,10 +38,10 @@
             "phpunit"
         ],
         "lint": [
-            "phpcs --standard=PSR12 src tests bootstrap"
+            "phpcs"
         ],
         "format": [
-            "phpcbf --standard=PSR12 src tests bootstrap"
+            "phpcbf"
         ]
     }
 }
