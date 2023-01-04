@@ -19,6 +19,7 @@ class TestCase extends FrameworkTestCase {
   {
     parent::__construct($name, $data, $dataName);
     $this->setUpRoutes = require __DIR__ . '/../bootstrap/routes.php';
+    $_ENV['SEARCH_PROVIDER_URL'] = 'https://api.fake.com';
   }
 
   protected function createAppInstance(): App
