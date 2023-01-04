@@ -4,7 +4,7 @@ namespace App\Shared\Infrastructure;
 use Exception;
 use mysqli;
 
-final class Database
+class Database
 {
   private $instance = null;
 
