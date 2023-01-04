@@ -167,4 +167,95 @@ final class SearchApi extends TestCase
     );
     $this->assertEquals('access_denied', $provider_error['error_name']);
   }
+
+  public function testDoesItCallSaveStats()
+  {
+    $client = $this->createApiClient();
+    $this->setUpCommonMockUpCalls($client);
+    $client->statsRepositoryProphecy->registerSearch('php')->shouldBeCalledTimes(1);
+
+    $response = $client->executeRequest(
+      method: 'GET',
+      path: '/search',
+      query: [
+        'query' => 'php',
+      ]
+    );
+
+    $statusCode = $response->getStatusCode();
+    $this->assertEquals(200, $statusCode);
+  }
+
+  public function testSaveInCache()
+  {
+    $client = $this->createApiClient();
+    $this->setUpCommonMockUpCalls($client);
+    $cacheKey = $this->getCacheKeyFrom('/search', 'php', 1, 10);
+    $client->cacheProphecy
+      ->set($cacheKey, Argument::type('string'), Argument::type('int'))
+      ->shouldBeCalledTimes(1);
+
+    $response = $client->executeRequest(
+      method: 'GET',
+      path: '/search',
+      query: [
+        'query' => 'php',
+      ]
+    );
+
+    $statusCode = $response->getStatusCode();
+    $this->assertEquals(200, $statusCode);
+  }
+
+  public function testUseCachedResponse()
+  {
+    $client = $this->createApiClient();
+    $this->setUpCommonMockUpCalls($client);
+    $cacheKey = $this->getCacheKeyFrom('/search', 'php', 1, 10);
+
+    $client->cacheProphecy
+      ->has($cacheKey)
+      ->willReturn(true);
+
+    $result = ResultFactory::create();
+    $client->cacheProphecy
+      ->get($cacheKey)
+      ->willReturn(json_encode([
+        'status' => 'success',
+        'data' => [
+          'results' => [$result]
+        ]
+      ]));
+
+    $client->searchEngineProphecy->search(
+      query: Argument::any(),
+      page: Argument::any(),
+      per_page: Argument::any()
+    )->shouldNotBeCalled();
+
+    $response = $client->executeRequest(
+      method: 'GET',
+      path: '/search',
+      query: [
+        'query' => 'php',
+      ]
+    );
+
+    $statusCode = $response->getStatusCode();
+    $this->assertEquals(200, $statusCode);
+
+    $responseData = json_decode($response->getBody(), true);
+    $this->assertEquals('success', $responseData['status']);
+    $this->assertEquals(1, count($responseData['data']['results']));
+
+    $apiResult = $responseData['data']['results'][0];
+    $this->assertEquals($result->title, $apiResult['title']);
+    $this->assertEquals($result->answer_count, $apiResult['answer_count']);
+    $this->assertEquals($result->username, $apiResult['username']);
+    $this->assertEquals($result->profile_picture_url, $apiResult['profile_picture_url']);
+  }
+
+  private function getCacheKeyFrom(string ...$parts) {
+    return urlencode(implode(':', $parts));
+  }
 }
