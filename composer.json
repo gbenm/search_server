@@ -16,10 +16,25 @@
             "App\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "Benyamin Galeano",
             "email": "benyamin.galeano@gmail.com"
         }
-    ]
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "phpspec/prophecy": "^1.16",
+        "fakerphp/faker": "^1.21"
+    },
+    "scripts": {
+        "test": [
+            "phpunit"
+        ]
+    }
 }
