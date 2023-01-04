@@ -1,6 +1,6 @@
 # Guías para el código
 
-# Estructura del proyecto
+## Estructura del proyecto
 - `bootstrap/` contiene el código que sirve
   para correr y configurar la aplicación.
 - `src/` contiene el código del servidor. Está
@@ -20,3 +20,7 @@
 - `tests/` debe contener las pruebas de cada
   módulo y sus respectivas **factories** de ser
   necesarias.
+
+## Principios
+- Para el código del servidor se prefiere **DRY**.
+- Para el código de las pruebas se prefiere **DAMP**.
