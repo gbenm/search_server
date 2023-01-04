@@ -18,7 +18,7 @@ class StatFactory
   {
     $faker = Factory::create();
     return new Stat(
-      query: $query ?? $faker->word(),
+      query: $query ?? $faker->unique()->text(),
       searches: $searches ?? $faker->numberBetween(0, 100)
     );
   }

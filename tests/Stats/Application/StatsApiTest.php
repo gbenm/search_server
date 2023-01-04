@@ -38,6 +38,10 @@ final class StatsApiTest extends TestCase
       return $acc;
     }, []);
 
+    $queries = array_map(fn ($stat) => $stat['query'], $responseData['data']['most_searched']);
+    $uniqueQueries = array_unique($queries);
+    $this->assertEquals(count($queries), count($uniqueQueries));
+
     foreach ($responseData['data']['most_searched'] as $stat) {
       /** @var Stat */
       $expected = $queryMap[$stat['query']];
@@ -131,6 +135,10 @@ final class StatsApiTest extends TestCase
       $acc[$stat->query] = $stat;
       return $acc;
     }, []);
+
+    $queries = array_map(fn ($stat) => $stat['query'], $responseData['data']['stats']);
+    $uniqueQueries = array_unique($queries);
+    $this->assertEquals(count($queries), count($uniqueQueries));
 
     foreach ($responseData['data']['stats'] as $stat) {
       /** @var Stat */
