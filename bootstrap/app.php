@@ -1,4 +1,5 @@
 <?php
+
 use Slim\Factory\AppFactory;
 
 require_once __DIR__ . '/env.php';
@@ -10,9 +11,9 @@ AppFactory::setContainer($container);
 $app = AppFactory::create();
 
 $errorMiddleware = $app->addErrorMiddleware(
-  displayErrorDetails: false,
-  logErrors: true,
-  logErrorDetails: true
+    displayErrorDetails: false,
+    logErrors: true,
+    logErrorDetails: true
 );
 
 $errorHandler = $errorMiddleware->getDefaultErrorHandler();

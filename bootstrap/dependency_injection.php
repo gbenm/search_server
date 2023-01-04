@@ -16,13 +16,13 @@ $container->set(CacheInterface::class, new RedisCache());
 
 $httpClient = new GuzzleClient();
 $container->set(SearchEngine::class, new StackExchangeSearchEngine(
-  client: $httpClient,
+    client: $httpClient,
 ));
 
 
 $database = new Database();
 $container->set(StatsRepository::class, new MySqlStatsRepository(
-  client: $database,
+    client: $database,
 ));
 
 return $container;

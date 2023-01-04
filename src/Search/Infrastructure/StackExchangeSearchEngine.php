@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Search\Infrastructure;
 
 use App\Search\Domain\Models\Result;
@@ -9,72 +10,73 @@ use App\Shared\Infrastructure\Env;
 
 class StackExchangeSearchEngine implements SearchEngine
 {
-  public function __construct(
-    private readonly HTTPClient $client,
-  ) {}
-
-  public function search(string $query, int $page, int $per_page): array
-  {
-    if (empty($query)) {
-      return [];
+    public function __construct(
+        private readonly HTTPClient $client,
+    ) {
     }
 
-    $results = [];
+    public function search(string $query, int $page, int $per_page): array
+    {
+        if (empty($query)) {
+            return [];
+        }
 
-    try {
-      $results = $this->client->request(
-        method: 'GET',
-        url: Env::getSearchProviderUrl() . '/search',
-        options: [
-          'query' => [
-            'intitle' => $query,
-            'site' => 'stackoverflow',
-            'page' => $page,
-            'pagesize' => $per_page,
-          ],
-        ],
-      );
-    } catch (ServerError $e) {
-      throw new ServerError(
-        message: $e->getMessage(),
-        statusCode: 502,
-        errorData: [
-          'provider_error' => $e->errorData,
-        ],
-      );
+        $results = [];
+
+        try {
+            $results = $this->client->request(
+                method: 'GET',
+                url: Env::getSearchProviderUrl() . '/search',
+                options: [
+                'query' => [
+                'intitle' => $query,
+                'site' => 'stackoverflow',
+                'page' => $page,
+                'pagesize' => $per_page,
+                ],
+                ],
+            );
+        } catch (ServerError $e) {
+            throw new ServerError(
+                message: $e->getMessage(),
+                statusCode: 502,
+                errorData: [
+                'provider_error' => $e->errorData,
+                ],
+            );
+        }
+
+        return array_map(
+            fn(array $response) => $this->resultFromResponse($response),
+            $results['items'],
+        );
     }
 
-    return array_map(
-      fn(array $response) => $this->resultFromResponse($response),
-      $results['items'],
-    );
-  }
-
-  private function resultFromResponse(array $response): Result
-  {
-    return new Result(
-      title: $response['title'],
-      answer_count: $response['answer_count'],
-      username: $this->getProfileUsername($response),
-      profile_picture_url: $this->getProfilePictureUrl($response),
-    );
-  }
-
-  private function getProfileUsername(array $response): ?string
-  {
-    if (isset($response['owner']['display_name'])) {
-      return $response['owner']['display_name'];
+    private function resultFromResponse(array $response): Result
+    {
+        return new Result(
+            title: $response['title'],
+            answer_count: $response['answer_count'],
+            username: $this->getProfileUsername($response),
+            profile_picture_url: $this->getProfilePictureUrl($response),
+        );
     }
 
-    return null;
-  }
+    private function getProfileUsername(array $response): ?string
+    {
+        if (isset($response['owner']['display_name'])) {
+            return $response['owner']['display_name'];
+        }
 
-  private function getProfilePictureUrl(array $response): string|null|array
-  {
-    if (isset($response['owner']['profile_image'])) {
-      return $response['owner']['profile_image'];
+        return null;
     }
 
-    return null;
-  }
+    private function getProfilePictureUrl(array $response): string|null|array
+    {
+        if (isset($response['owner']['profile_image'])) {
+            return $response['owner']['profile_image'];
+        }
+
+        return null;
+    }
 }
