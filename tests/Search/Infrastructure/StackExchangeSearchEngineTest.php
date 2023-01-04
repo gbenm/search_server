@@ -206,4 +206,42 @@ final class StackExchangeSearchEngineTest extends TestCase
     $this->assertNull($results[0]->username);
     $this->assertNull($results[0]->profile_picture_url);
   }
+
+  public function testProfileImageCanBeAnArray()
+  {
+    $clientProphecy = $this->prophet->prophesize(HTTPClient::class);
+    $providerResponse = SearchProviderResponse::create(1);
+    $providerResponse['items'][0]['owner']['profile_image'] = [
+      'https://example.com/image.png',
+      'https://example.com/image2.png',
+    ];
+
+    $clientProphecy->request(
+      method: 'GET',
+      url: 'https://api.fake.com/search',
+      options: [
+        'query' => [
+          'intitle' => 'php',
+          'site' => 'stackoverflow',
+          'page' => 1,
+          'pagesize' => 10,
+        ],
+      ],
+    )->willReturn($providerResponse);
+
+    $client = $clientProphecy->reveal();
+    $searchEngine = new StackExchangeSearchEngine($client);
+    $results = $searchEngine->search(
+      query: 'php',
+      page: 1,
+      per_page: 10
+    );
+
+    $this->assertIsArray($results);
+    $this->assertNotEmpty($results);
+    $this->assertCount(1, $results);
+    $this->assertInstanceOf(Result::class, $results[0]);
+    $this->assertIsArray($results[0]->profile_picture_url);
+    $this->assertCount(2, $results[0]->profile_picture_url);
+  }
 }
