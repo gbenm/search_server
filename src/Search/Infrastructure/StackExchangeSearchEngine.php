@@ -5,6 +5,7 @@ use App\Search\Domain\Models\Result;
 use App\Search\Domain\SearchEngine;
 use App\Shared\Domain\HTTPClient;
 use App\Shared\Domain\ServerError;
+use App\Shared\Infrastructure\Env;
 
 class StackExchangeSearchEngine implements SearchEngine
 {
@@ -23,7 +24,7 @@ class StackExchangeSearchEngine implements SearchEngine
     try {
       $results = $this->client->request(
         method: 'GET',
-        url: 'https://api.stackexchange.com/2.3/search',
+        url: Env::getSearchProviderUrl() . '/search',
         options: [
           'query' => [
             'intitle' => $query,

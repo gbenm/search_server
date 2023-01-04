@@ -15,6 +15,12 @@ class Env
     return $_ENV[$key];
   }
 
+  public static function getSearchProviderUrl(): string
+  {
+    $url = self::getOrElse('SEARCH_PROVIDER_URL', 'https://api.stackexchange.com/2.3');
+    return rtrim($url, '/');
+  }
+
   public static function getCacheTTL(): int
   {
     return (int) self::getOrElse('CACHE_TTL', 900);
