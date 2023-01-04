@@ -7,7 +7,7 @@ use Tests\ApiClient;
 use Tests\Search\Factories\ResultFactory;
 use Tests\TestCase;
 
-final class SearchApi extends TestCase
+final class SearchApiTest extends TestCase
 {
   private function setUpCommonMockUpCalls(ApiClient $client)
   {

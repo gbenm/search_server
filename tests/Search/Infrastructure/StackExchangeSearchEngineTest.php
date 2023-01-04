@@ -1,7 +1,8 @@
 <?php
-namespace App\Search\Infrastructure;
+namespace Tests\Search\Infrastructure;
 
 use App\Search\Domain\Models\Result;
+use App\Search\Infrastructure\StackExchangeSearchEngine;
 use App\Shared\Domain\HTTPClient;
 use App\Shared\Domain\ServerError;
 use Tests\Search\Factories\SearchProviderResponse;
