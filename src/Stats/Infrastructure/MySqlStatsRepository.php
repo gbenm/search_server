@@ -15,7 +15,12 @@ class MySqlStatsRepository implements StatsRepository
 
     public function getMostSearched(int $top, \DateTime $from, \DateTime $until): array
     {
-        $statement = 'SELECT query, COUNT(*) AS searches FROM search_logs WHERE searched_at BETWEEN ? AND ? GROUP BY query ORDER BY searches DESC LIMIT ?;';
+        $statement = <<<SQL
+          SELECT query, COUNT(*) AS searches
+          FROM search_logs
+          WHERE searched_at BETWEEN ? AND ?
+          GROUP BY query ORDER BY searches DESC LIMIT ?;
+        SQL;
         $params = ['ssi', $this->dateFormat($from), $this->dateFormat($until), $top];
 
         $results = $this->client->select($statement, $params);
@@ -43,10 +48,20 @@ class MySqlStatsRepository implements StatsRepository
     private function getStatementForStatsOfQuery(bool $exact): string
     {
         if ($exact) {
-            return 'SELECT query, COUNT(*) AS searches FROM search_logs WHERE query = ? AND searched_at BETWEEN ? AND ? GROUP BY query ORDER BY searches DESC LIMIT ?;';
+            return <<<SQL
+              SELECT query, COUNT(*) AS searches
+              FROM search_logs
+              WHERE query = ? AND searched_at BETWEEN ? AND ?
+              GROUP BY query ORDER BY searches DESC LIMIT ?;
+            SQL;
         }
 
-        return 'SELECT query, COUNT(*) AS searches FROM search_logs WHERE query LIKE ? AND searched_at BETWEEN ? AND ? GROUP BY query ORDER BY searches DESC LIMIT ?;';
+        return <<<SQL
+          SELECT query, COUNT(*) AS searches
+          FROM search_logs
+          WHERE query LIKE ? AND searched_at BETWEEN ? AND ?
+          GROUP BY query ORDER BY searches DESC LIMIT ?;
+        SQL;
     }
 
     public function registerSearch(string $query): void
