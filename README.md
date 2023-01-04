@@ -79,7 +79,11 @@ En el archivo php.ini
 [xdebug]
 xdebug.mode = debug
 xdebug.start_with_request = yes
+xdebug.log=/var/log/xdebug.log
 ```
+
+> `xdebug.log` es importante si se utiliza `phpcs` con vscode ya que sino
+> la extensión no es capaz de interpretar el json de salida.
 
 ### Uso
 Se inicia el debugger con el perfil `Listen for Xdebug` y luego en la
