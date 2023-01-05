@@ -41,7 +41,7 @@ class StackExchangeSearchEngine implements SearchEngine
                 message: $e->getMessage(),
                 statusCode: 502,
                 errorData: [
-                'provider_error' => $e->errorData,
+                    'provider_error' => $e->errorData,
                 ],
             );
         }

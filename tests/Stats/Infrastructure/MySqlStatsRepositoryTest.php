@@ -18,10 +18,10 @@ final class MySqlStatsRepositoryTest extends TestCase
         $dbClientProphecy->select(
             statement: Argument::type('string'),
             params: [
-            'ssi',
-            '2021-01-01 00:00:00',
-            '2021-01-31 00:00:00',
-            10
+                'ssi',
+                '2021-01-01 00:00:00',
+                '2021-01-31 00:00:00',
+                10
             ]
         )->willReturn([$expectStat->toArray()]);
 
@@ -46,11 +46,11 @@ final class MySqlStatsRepositoryTest extends TestCase
         $dbClientProphecy->select(
             statement: Argument::type('string'),
             params: [
-            'sssi',
-            '%php%',
-            '2021-01-01 00:00:00',
-            '2021-01-31 00:00:00',
-            15
+                'sssi',
+                '%php%',
+                '2021-01-01 00:00:00',
+                '2021-01-31 00:00:00',
+                15
             ]
         )->willReturn([$expectStat->toArray()]);
 
@@ -77,11 +77,11 @@ final class MySqlStatsRepositoryTest extends TestCase
         $dbClientProphecy->select(
             statement: Argument::type('string'),
             params: [
-            'sssi',
-            'php',
-            '2021-01-01 00:00:00',
-            '2021-01-31 00:00:00',
-            15
+                'sssi',
+                'php',
+                '2021-01-01 00:00:00',
+                '2021-01-31 00:00:00',
+                15
             ]
         )->willReturn([$expectStat->toArray()]);
 
@@ -107,8 +107,8 @@ final class MySqlStatsRepositoryTest extends TestCase
         $dbClientProphecy->insert(
             statement: Argument::type('string'),
             params: [
-            's',
-            'php',
+                's',
+                'php',
             ]
         )->shouldBeCalledTimes(1);
 

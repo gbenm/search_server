@@ -13,9 +13,9 @@ class StatsUseCase
     ) {
     }
 
-  /**
-   * @return Stat[]
-   */
+    /**
+     * @return Stat[]
+     */
     public function getMostSearched(int $top, DateTime $from, DateTime $until): array
     {
         return $this->repo->getMostSearched(

@@ -87,7 +87,7 @@ class ApiClient
 
     protected function setUpContainer()
     {
-      /** @var Container */
+        /** @var Container */
         $container = $this->app->getContainer();
 
         $cache = $this->cacheProphecy->reveal();

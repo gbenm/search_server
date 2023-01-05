@@ -44,7 +44,7 @@ final class StatsApiTest extends TestCase
         $this->assertEquals(count($queries), count($uniqueQueries));
 
         foreach ($responseData['data']['most_searched'] as $stat) {
-          /** @var Stat */
+            /** @var Stat */
             $expected = $queryMap[$stat['query']];
             $this->assertEquals($expected->searches, $stat['searches']);
         }
@@ -65,7 +65,7 @@ final class StatsApiTest extends TestCase
             method: 'GET',
             path: '/stats',
             query: [
-            'top' => 20
+                'top' => 20
             ]
         );
 
@@ -93,8 +93,8 @@ final class StatsApiTest extends TestCase
             method: 'GET',
             path: '/stats',
             query: [
-            'from' => '2021-01-01',
-            'until' => '2021-01-31'
+                'from' => '2021-01-01',
+                'until' => '2021-01-31'
             ]
         );
 
@@ -142,7 +142,7 @@ final class StatsApiTest extends TestCase
         $this->assertEquals(count($queries), count($uniqueQueries));
 
         foreach ($responseData['data']['stats'] as $stat) {
-          /** @var Stat */
+            /** @var Stat */
             $expected = $queryMap[$stat['query']];
             $this->assertEquals($expected->searches, $stat['searches']);
         }
@@ -165,7 +165,7 @@ final class StatsApiTest extends TestCase
             method: 'GET',
             path: '/stats/test',
             query: [
-            'exact' => 'true'
+                'exact' => 'true'
             ]
         );
 
@@ -194,7 +194,7 @@ final class StatsApiTest extends TestCase
             method: 'GET',
             path: '/stats/test',
             query: [
-            'count' => 20
+                'count' => 20
             ]
         );
 
@@ -223,8 +223,8 @@ final class StatsApiTest extends TestCase
             method: 'GET',
             path: '/stats/test',
             query: [
-            'from' => '2021-01-01',
-            'until' => '2021-01-31'
+                'from' => '2021-01-01',
+                'until' => '2021-01-31'
             ]
         );
 

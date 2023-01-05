@@ -13,8 +13,8 @@ final class Stat
     public function toArray()
     {
         return [
-        'query' => $this->query,
-        'searches' => $this->searches,
+            'query' => $this->query,
+            'searches' => $this->searches,
         ];
     }
 }

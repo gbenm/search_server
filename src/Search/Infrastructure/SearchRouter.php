@@ -35,7 +35,7 @@ class SearchRouter
             $statsUseCase = new StatsUseCase($statsRepo);
             $statsUseCase->registerSearch($query);
 
-          /** @var CacheInterface */
+            /** @var CacheInterface */
             $cache = self::getFromContainer($this, CacheInterface::class);
             $cacheKey = self::getCacheKeyFrom('/search', $query, $page, $pagesize);
             $inCache = $cache->has($cacheKey);

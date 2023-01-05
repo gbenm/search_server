@@ -12,9 +12,9 @@ class SearchUseCase
     ) {
     }
 
-  /**
-   * @return Result[]
-   */
+    /**
+     * @return Result[]
+     */
     public function search(string $query, int $page, int $perPage): array
     {
         return $this->engine->search($query, $page, $perPage);
