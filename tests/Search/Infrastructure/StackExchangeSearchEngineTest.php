@@ -19,21 +19,23 @@ final class StackExchangeSearchEngineTest extends TestCase
             method: 'GET',
             url: 'https://api.fake.com/search',
             options: [
-            'query' => [
-            'intitle' => 'php',
-            'site' => 'stackoverflow',
-            'page' => 1,
-            'pagesize' => 10,
-            ],
+                'query' => [
+                    'intitle' => 'php',
+                    'site' => 'stackoverflow',
+                    'page' => 1,
+                    'pagesize' => 10,
+                ],
             ],
         )->willReturn($providerResponse);
 
         $client = $clientProphecy->reveal();
         $searchEngine = new StackExchangeSearchEngine($client);
+
+        /** @var Result[] */
         $results = $searchEngine->search(
             query: 'php',
             page: 1,
-            per_page: 10
+            perPage: 10
         );
 
         $this->assertIsArray($results);
@@ -52,9 +54,9 @@ final class StackExchangeSearchEngineTest extends TestCase
 
         foreach ($results as $result) {
             $this->assertArrayHasKey($result->title, $titlesMap);
-            $this->assertEquals($result->answer_count, $titlesMap[$result->title]['answer_count']);
+            $this->assertEquals($result->answerCount, $titlesMap[$result->title]['answer_count']);
             $this->assertEquals($result->username, $titlesMap[$result->title]['owner']['display_name']);
-            $this->assertEquals($result->profile_picture_url, $titlesMap[$result->title]['owner']['profile_image']);
+            $this->assertEquals($result->profilePictureUrl, $titlesMap[$result->title]['owner']['profile_image']);
         }
     }
 
@@ -65,20 +67,20 @@ final class StackExchangeSearchEngineTest extends TestCase
             method: 'GET',
             url: 'https://api.fake.com/search',
             options: [
-            'query' => [
-            'intitle' => 'php',
-            'site' => 'stackoverflow',
-            'page' => 26,
-            'pagesize' => 10,
-            ],
+                'query' => [
+                    'intitle' => 'php',
+                    'site' => 'stackoverflow',
+                    'page' => 26,
+                    'pagesize' => 10,
+                ],
             ],
         )->willThrow(new ServerError(
             message: 'Bad Request',
             statusCode: 400,
             errorData: [
-            'error_id' => 403,
-            'error_message' => 'page above 25 requires access token or app key',
-            'error_name' => 'access_denied',
+                'error_id' => 403,
+                'error_message' => 'page above 25 requires access token or app key',
+                'error_name' => 'access_denied',
             ],
         ));
 
@@ -89,7 +91,7 @@ final class StackExchangeSearchEngineTest extends TestCase
             $searchEngine->search(
                 query: 'php',
                 page: 26,
-                per_page: 10
+                perPage: 10
             );
             $this->fail('Should throw ServerError');
         } catch (ServerError $error) {
@@ -116,28 +118,30 @@ final class StackExchangeSearchEngineTest extends TestCase
             method: 'GET',
             url: 'https://api.fake.com/search',
             options: [
-            'query' => [
-            'intitle' => 'php',
-            'site' => 'stackoverflow',
-            'page' => 1,
-            'pagesize' => 10,
-            ],
+                'query' => [
+                    'intitle' => 'php',
+                    'site' => 'stackoverflow',
+                    'page' => 1,
+                    'pagesize' => 10,
+                ],
             ],
         )->willReturn($providerResponse);
 
         $client = $clientProphecy->reveal();
         $searchEngine = new StackExchangeSearchEngine($client);
+
+        /** @var Result[] */
         $results = $searchEngine->search(
             query: 'php',
             page: 1,
-            per_page: 10
+            perPage: 10
         );
 
         $this->assertIsArray($results);
         $this->assertNotEmpty($results);
         $this->assertCount(1, $results);
         $this->assertInstanceOf(Result::class, $results[0]);
-        $this->assertNull($results[0]->profile_picture_url);
+        $this->assertNull($results[0]->profilePictureUrl);
     }
 
     public function testShouldNotFailIfUsernameIsNull()
@@ -150,21 +154,23 @@ final class StackExchangeSearchEngineTest extends TestCase
             method: 'GET',
             url: 'https://api.fake.com/search',
             options: [
-            'query' => [
-            'intitle' => 'php',
-            'site' => 'stackoverflow',
-            'page' => 1,
-            'pagesize' => 10,
-            ],
+                'query' => [
+                    'intitle' => 'php',
+                    'site' => 'stackoverflow',
+                    'page' => 1,
+                    'pagesize' => 10,
+                ],
             ],
         )->willReturn($providerResponse);
 
         $client = $clientProphecy->reveal();
         $searchEngine = new StackExchangeSearchEngine($client);
+
+        /** @var Result[] */
         $results = $searchEngine->search(
             query: 'php',
             page: 1,
-            per_page: 10
+            perPage: 10
         );
 
         $this->assertIsArray($results);
@@ -184,21 +190,23 @@ final class StackExchangeSearchEngineTest extends TestCase
             method: 'GET',
             url: 'https://api.fake.com/search',
             options: [
-            'query' => [
-            'intitle' => 'php',
-            'site' => 'stackoverflow',
-            'page' => 1,
-            'pagesize' => 10,
-            ],
+                'query' => [
+                    'intitle' => 'php',
+                    'site' => 'stackoverflow',
+                    'page' => 1,
+                    'pagesize' => 10,
+                ],
             ],
         )->willReturn($providerResponse);
 
         $client = $clientProphecy->reveal();
         $searchEngine = new StackExchangeSearchEngine($client);
+
+        /** @var Result[] */
         $results = $searchEngine->search(
             query: 'php',
             page: 1,
-            per_page: 10
+            perPage: 10
         );
 
         $this->assertIsArray($results);
@@ -206,7 +214,7 @@ final class StackExchangeSearchEngineTest extends TestCase
         $this->assertCount(1, $results);
         $this->assertInstanceOf(Result::class, $results[0]);
         $this->assertNull($results[0]->username);
-        $this->assertNull($results[0]->profile_picture_url);
+        $this->assertNull($results[0]->profilePictureUrl);
     }
 
     public function testProfileImageCanBeAnArray()
@@ -222,28 +230,30 @@ final class StackExchangeSearchEngineTest extends TestCase
             method: 'GET',
             url: 'https://api.fake.com/search',
             options: [
-            'query' => [
-            'intitle' => 'php',
-            'site' => 'stackoverflow',
-            'page' => 1,
-            'pagesize' => 10,
-            ],
+                'query' => [
+                    'intitle' => 'php',
+                    'site' => 'stackoverflow',
+                    'page' => 1,
+                    'pagesize' => 10,
+                ],
             ],
         )->willReturn($providerResponse);
 
         $client = $clientProphecy->reveal();
         $searchEngine = new StackExchangeSearchEngine($client);
+
+        /** @var Result[] */
         $results = $searchEngine->search(
             query: 'php',
             page: 1,
-            per_page: 10
+            perPage: 10
         );
 
         $this->assertIsArray($results);
         $this->assertNotEmpty($results);
         $this->assertCount(1, $results);
         $this->assertInstanceOf(Result::class, $results[0]);
-        $this->assertIsArray($results[0]->profile_picture_url);
-        $this->assertCount(2, $results[0]->profile_picture_url);
+        $this->assertIsArray($results[0]->profilePictureUrl);
+        $this->assertCount(2, $results[0]->profilePictureUrl);
     }
 }

@@ -15,7 +15,7 @@ class StackExchangeSearchEngine implements SearchEngine
     ) {
     }
 
-    public function search(string $query, int $page, int $per_page): array
+    public function search(string $query, int $page, int $perPage): array
     {
         if (empty($query)) {
             return [];
@@ -28,12 +28,12 @@ class StackExchangeSearchEngine implements SearchEngine
                 method: 'GET',
                 url: Env::getSearchProviderUrl() . '/search',
                 options: [
-                'query' => [
-                'intitle' => $query,
-                'site' => 'stackoverflow',
-                'page' => $page,
-                'pagesize' => $per_page,
-                ],
+                    'query' => [
+                        'intitle' => $query,
+                        'site' => 'stackoverflow',
+                        'page' => $page,
+                        'pagesize' => $perPage,
+                    ],
                 ],
             );
         } catch (ServerError $e) {
@@ -56,9 +56,9 @@ class StackExchangeSearchEngine implements SearchEngine
     {
         return new Result(
             title: $response['title'],
-            answer_count: $response['answer_count'],
+            answerCount: $response['answer_count'],
             username: $this->getProfileUsername($response),
-            profile_picture_url: $this->getProfilePictureUrl($response),
+            profilePictureUrl: $this->getProfilePictureUrl($response),
         );
     }
 

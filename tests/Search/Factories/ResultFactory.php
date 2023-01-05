@@ -22,9 +22,9 @@ class ResultFactory
 
         return new Result(
             title: $title ?: $faker->sentence(),
-            answer_count: $answerCount ?: $faker->numberBetween(0, 100),
+            answerCount: $answerCount ?: $faker->numberBetween(0, 100),
             username: $username ?: $faker->userName(),
-            profile_picture_url: $profilePictureUrl ?: $faker->imageUrl(),
+            profilePictureUrl: $profilePictureUrl ?: $faker->imageUrl(),
         );
     }
 }

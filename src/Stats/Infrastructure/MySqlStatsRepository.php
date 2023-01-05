@@ -34,8 +34,8 @@ class MySqlStatsRepository implements StatsRepository
     public function getStatsOf(string $query, bool $exact, int $count, DateTime $from, DateTime $until): array
     {
         $statement = $this->getStatementForStatsOfQuery($exact);
-        $search_term = $exact ? $query : "%$query%";
-        $params = ['sssi', $search_term, $this->dateFormat($from), $this->dateFormat($until), $count];
+        $searchTerm = $exact ? $query : "%$query%";
+        $params = ['sssi', $searchTerm, $this->dateFormat($from), $this->dateFormat($until), $count];
 
         $results = $this->client->select($statement, $params);
 

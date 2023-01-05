@@ -32,32 +32,32 @@ class SearchRouter
             $pagesize = $request->getQueryParams()['pagesize'] ?? 10;
 
             $statsRepo = self::getFromContainer($this, StatsRepository::class);
-            $stats_use_case = new StatsUseCase($statsRepo);
-            $stats_use_case->registerSearch($query);
+            $statsUseCase = new StatsUseCase($statsRepo);
+            $statsUseCase->registerSearch($query);
 
           /** @var CacheInterface */
             $cache = self::getFromContainer($this, CacheInterface::class);
-            $cache_key = self::getCacheKeyFrom('/search', $query, $page, $pagesize);
-            $in_cache = $cache->has($cache_key);
+            $cacheKey = self::getCacheKeyFrom('/search', $query, $page, $pagesize);
+            $inCache = $cache->has($cacheKey);
 
-            if ($in_cache) {
-                $cached_results = $cache->get($cache_key);
-                $response->getBody()->write($cached_results);
+            if ($inCache) {
+                $cachedResults = $cache->get($cacheKey);
+                $response->getBody()->write($cachedResults);
                 return self::asJson($response);
             }
 
-            $search_engine = self::getFromContainer($this, SearchEngine::class);
-            $search_use_case = new SearchUseCase($search_engine);
+            $searchEngine = self::getFromContainer($this, SearchEngine::class);
+            $searchUseCase = new SearchUseCase($searchEngine);
 
             $results = [];
 
             try {
-                $results = $search_use_case->search($query, $page, $pagesize);
+                $results = $searchUseCase->search($query, $page, $pagesize);
             } catch (ServerError $e) {
                 $response->getBody()->write(json_encode([
-                'status' => 'error',
-                'message' => $e->getMessage(),
-                'data' => $e->errorData
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
+                    'data' => $e->errorData
                 ]));
 
                 return self::asJson($response->withStatus($e->statusCode));
@@ -65,17 +65,17 @@ class SearchRouter
 
             $results = array_map(fn(Result $result) => $result->toArray(), $results);
 
-            $json_response = [
-            'status' => 'success',
-            'data' => [
-            'results' => $results,
-            ]
+            $jsonResponse = [
+                'status' => 'success',
+                'data' => [
+                    'results' => $results,
+                ]
             ];
 
-            $json_encoded = json_encode($json_response);
-            $response->getBody()->write($json_encoded);
+            $jsonEncoded = json_encode($jsonResponse);
+            $response->getBody()->write($jsonEncoded);
 
-            $cache->set($cache_key, $json_encoded, Env::getCacheTTL());
+            $cache->set($cacheKey, $jsonEncoded, Env::getCacheTTL());
 
             return self::asJson($response);
         });

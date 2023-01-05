@@ -34,21 +34,21 @@ class StatsRouter
             $until = self::getEndDateTime($params);
 
             $statsRepo = self::getFromContainer($this, StatsRepository::class);
-            $stats_use_case = new StatsUseCase($statsRepo);
-            $most_searched = $stats_use_case->getMostSearched(
+            $statsUseCase = new StatsUseCase($statsRepo);
+            $mostSearched = $statsUseCase->getMostSearched(
                 top: $top,
                 from: $from,
                 until: $until
             );
 
-            $most_searched = array_map(fn(Stat $stat) => $stat->toArray(), $most_searched);
+            $mostSearched = array_map(fn(Stat $stat) => $stat->toArray(), $mostSearched);
 
             $response->getBody()->write(json_encode([
-            'status' => 'success',
-            'data' => [
-            'top' => $top,
-            'most_searched' => $most_searched,
-            ]
+                'status' => 'success',
+                'data' => [
+                    'top' => $top,
+                    'most_searched' => $mostSearched,
+                ]
             ]));
 
             return self::asJson($response);
@@ -68,8 +68,8 @@ class StatsRouter
             $count = $params['count'] ?? 10;
 
             $statsRepo = self::getFromContainer($this, StatsRepository::class);
-            $stats_use_case = new StatsUseCase($statsRepo);
-            $stats = $stats_use_case->getStatsOf(
+            $statsUseCase = new StatsUseCase($statsRepo);
+            $stats = $statsUseCase->getStatsOf(
                 query: $query,
                 count: $count,
                 exact: $exact,
@@ -80,10 +80,10 @@ class StatsRouter
             $stats = array_map(fn(Stat $stat) => $stat->toArray(), $stats);
 
             $response->getBody()->write(json_encode([
-            'status' => 'success',
-            'data' => [
-            'stats' => $stats,
-            ]
+                'status' => 'success',
+                'data' => [
+                    'stats' => $stats,
+                ]
             ]));
 
             return self::asJson($response);

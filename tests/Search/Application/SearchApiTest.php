@@ -23,7 +23,7 @@ final class SearchApiTest extends TestCase
         $client->searchEngineProphecy->search(
             query: Argument::type('string'),
             page: Argument::type('int'),
-            per_page: Argument::type('int')
+            perPage: Argument::type('int')
         )->willReturn([]);
     }
 
@@ -56,14 +56,14 @@ final class SearchApiTest extends TestCase
         $client->searchEngineProphecy->search(
             query: 'php',
             page: 1,
-            per_page: 10
+            perPage: 10
         )->willReturn([$expectedResult]);
 
         $response = $client->executeRequest(
             method: 'GET',
             path: '/search',
             query: [
-            'query' => 'php'
+                'query' => 'php'
             ]
         );
 
@@ -77,9 +77,9 @@ final class SearchApiTest extends TestCase
 
         $resultFound = $responseData['data']['results'][0];
         $this->assertEquals($expectedResult->title, $resultFound['title']);
-        $this->assertEquals($expectedResult->answer_count, $resultFound['answer_count']);
+        $this->assertEquals($expectedResult->answerCount, $resultFound['answer_count']);
         $this->assertEquals($expectedResult->username, $resultFound['username']);
-        $this->assertEquals($expectedResult->profile_picture_url, $resultFound['profile_picture_url']);
+        $this->assertEquals($expectedResult->profilePictureUrl, $resultFound['profile_picture_url']);
     }
 
     public function testCanSearchWithPagination()
@@ -96,16 +96,16 @@ final class SearchApiTest extends TestCase
         $client->searchEngineProphecy->search(
             query: 'php',
             page: 10,
-            per_page: 5
+            perPage: 5
         )->willReturn($expectedResults);
 
         $response = $client->executeRequest(
             method: 'GET',
             path: '/search',
             query: [
-            'query' => 'php',
-            'page' => 10,
-            'pagesize' => 5
+                'query' => 'php',
+                'page' => 10,
+                'pagesize' => 5
             ]
         );
 
@@ -130,16 +130,16 @@ final class SearchApiTest extends TestCase
         $client->searchEngineProphecy->search(
             query: 'php',
             page: 26,
-            per_page: 10
+            perPage: 10
         )->willThrow(new ServerError(
             message: 'Bad Gateway',
             statusCode: 502,
             errorData: [
-            'provider_error' => [
-            'error_id' => 403,
-            'error_message' => 'page above 25 requires access token or app key',
-            'error_name' => 'access_denied',
-            ]
+                'provider_error' => [
+                    'error_id' => 403,
+                    'error_message' => 'page above 25 requires access token or app key',
+                    'error_name' => 'access_denied',
+                ]
             ]
         ));
 
@@ -147,8 +147,8 @@ final class SearchApiTest extends TestCase
             method: 'GET',
             path: '/search',
             query: [
-            'query' => 'php',
-            'page' => 26,
+                'query' => 'php',
+                'page' => 26,
             ]
         );
 
@@ -160,13 +160,13 @@ final class SearchApiTest extends TestCase
         $this->assertEquals('error', $data['status']);
         $this->assertEquals('Bad Gateway', $data['message']);
 
-        $provider_error = $data['data']['provider_error'];
-        $this->assertEquals(403, $provider_error['error_id']);
+        $providerError = $data['data']['provider_error'];
+        $this->assertEquals(403, $providerError['error_id']);
         $this->assertEquals(
             'page above 25 requires access token or app key',
-            $provider_error['error_message']
+            $providerError['error_message']
         );
-        $this->assertEquals('access_denied', $provider_error['error_name']);
+        $this->assertEquals('access_denied', $providerError['error_name']);
     }
 
     public function testDoesItCallSaveStats()
@@ -179,7 +179,7 @@ final class SearchApiTest extends TestCase
             method: 'GET',
             path: '/search',
             query: [
-            'query' => 'php',
+                'query' => 'php',
             ]
         );
 
@@ -200,7 +200,7 @@ final class SearchApiTest extends TestCase
             method: 'GET',
             path: '/search',
             query: [
-            'query' => 'php',
+                'query' => 'php',
             ]
         );
 
@@ -222,23 +222,23 @@ final class SearchApiTest extends TestCase
         $client->cacheProphecy
         ->get($cacheKey)
         ->willReturn(json_encode([
-        'status' => 'success',
-        'data' => [
-          'results' => [$result]
-        ]
+            'status' => 'success',
+            'data' => [
+                'results' => [$result->toArray()]
+            ]
         ]));
 
         $client->searchEngineProphecy->search(
             query: Argument::any(),
             page: Argument::any(),
-            per_page: Argument::any()
+            perPage: Argument::any()
         )->shouldNotBeCalled();
 
         $response = $client->executeRequest(
             method: 'GET',
             path: '/search',
             query: [
-            'query' => 'php',
+                'query' => 'php',
             ]
         );
 
@@ -251,9 +251,9 @@ final class SearchApiTest extends TestCase
 
         $apiResult = $responseData['data']['results'][0];
         $this->assertEquals($result->title, $apiResult['title']);
-        $this->assertEquals($result->answer_count, $apiResult['answer_count']);
+        $this->assertEquals($result->answerCount, $apiResult['answer_count']);
         $this->assertEquals($result->username, $apiResult['username']);
-        $this->assertEquals($result->profile_picture_url, $apiResult['profile_picture_url']);
+        $this->assertEquals($result->profilePictureUrl, $apiResult['profile_picture_url']);
     }
 
     private function getCacheKeyFrom(string ...$parts)
