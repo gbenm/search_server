@@ -7,6 +7,10 @@
     <!-- inherit rules from: -->
     <rule ref="PSR12"/>
     <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+    <rule ref="Squiz.NamingConventions.ValidVariableName"/>
+    <rule ref="Squiz.NamingConventions.ValidVariableName.PrivateNoUnderscore">
+      <severity>0</severity>
+    </rule>
 
     <file>src</file>
     <file>bootstrap</file>
